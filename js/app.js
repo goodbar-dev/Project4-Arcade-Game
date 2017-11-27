@@ -2,12 +2,13 @@
 class Enemy {
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
-  constructor(x, y) {
+  constructor(x, y, speed) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
     this.x = x;
     this.y = y;
+    this.sprite = 'images/enemy-bug.png';
+    this.speed = speed;
   }
 
   // Update the enemy's position, required method for game
@@ -16,13 +17,29 @@ class Enemy {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    //this.x = x * dt;
-    //this.y = x * dt;
+    //this.x = x;
+    //this.y = y;
   }
 
   // Draw the enemy on the screen, required method for game
   render() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  }
+
+  animate(on) {
+    let animateFunc = function(enemy) {
+      if (enemy.x < maxX) {
+        enemy.x++;
+      } else {
+        enemy.x = -100;
+      }
+    }
+
+    if (on) {
+      this.interval = setInterval(animateFunc, this.speed, this);
+    } else {
+      clearInterval(this.interval);
+    }
   }
 };
 
@@ -69,17 +86,19 @@ class Player {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-let allEnemies = new Array(
-    new Enemy(0, 70)
-  , new Enemy(0, 150)
-  , new Enemy(0, 230)
-);
+const minX = -100;
+const maxX = 600;
 let player = new Player("char-boy");
-let position
+let allEnemies = new Array(
+    new Enemy(-100, 70, 1)
+  , new Enemy(-100, 150, 5)
+  , new Enemy(-100, 230, 10)
+);
+
 
 // Place the player object in a variable called player
 function startGame() {
-  allEnemies.forEach((enemy) => { enemy.render(); });
+  allEnemies.forEach((enemy) => { enemy.render(); enemy.animate(true); });
   player.render();
 }
 
