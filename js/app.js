@@ -17,8 +17,8 @@ class Enemy {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    //this.x = x;
-    //this.y = y;
+    //this.x = x * dt;
+    //this.y = y * dt;
   }
 
   // Draw the enemy on the screen, required method for game
@@ -66,6 +66,10 @@ class Player {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 
+  reset() {
+
+  }
+
   handleInput(e) {
     switch (e) {
       case "up":
@@ -85,20 +89,26 @@ class Player {
 };
 
 // Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
+const enemyLanes = new Array(70, 150, 230);  //possible enemy lanes
 const minX = -100;
 const maxX = 600;
+const difficultyLevel = 8;  //the # of enemies
 let player = new Player("char-boy");
-let allEnemies = new Array(
-    new Enemy(-100, 70, 1)
-  , new Enemy(-100, 150, 5)
-  , new Enemy(-100, 230, 10)
-);
+let allEnemies = new Array();
 
-
-// Place the player object in a variable called player
 function startGame() {
-  allEnemies.forEach((enemy) => { enemy.render(); enemy.animate(true); });
+  //fill allEnemies
+  for (let x = 0; x < difficultyLevel; x++) {
+    //add enemy at the starting point in 1 of 3 random lanes running in 1 of 10 random speeds.
+    //place all enemy objects in an array called allEnemies
+    allEnemies.push(new Enemy(-100, enemyLanes[Math.floor((Math.random() * 3))], Math.floor((Math.random() * 10) + 1)));
+  }
+
+  allEnemies.forEach((enemy) => {
+    enemy.render();
+    enemy.animate(true);
+  });
+
   player.render();
 }
 
@@ -113,5 +123,8 @@ document.addEventListener('keyup', function(e) {
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
-    startGame();
+});
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  startGame();
 });
