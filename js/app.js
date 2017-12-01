@@ -18,6 +18,7 @@ class Enemy {
   // all computers.
   update(dt, increaseX, increaseY) {
 
+    //if dt < 1, then no need to adjust movement as this is a speedy machine.
     if (dt < 1) {
       dt = 1;
     }
@@ -37,13 +38,19 @@ class Enemy {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 
+  //checks to see if the enemy is in a space containing the player.
+  //if so, then decrement score, reset player position, and update game status.
   checkCollision() {
     if (this.x >= (player.x - 35) && this.x <= (player.x + 35) && this.y == (player.y - 15)) {
       player.score--;
       player.reset();
+      //update game status
+      document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
     }
   }
 
+  //Activates or deactivates animation of a single enemy.
+  //If the enemy leaves the screen, reset the lane and speed to random values, stop the animation and restart with new values.
   animate(on) {
     let animateFunc = function(enemy) {
       let now = Date.now();
@@ -118,9 +125,15 @@ class Player {
     }
     else if ((this.y + increaseY) <= minY) {
       insideBoundaries = false;
+      //if this is true, the player WON, so update score/difficultyLevel and restart the game.
       this.score++;
-      alert("You win!  Your score is: " + this.score);
       this.reset();
+      stopGame();
+      difficultyLevel++;
+      startGame();
+      alert("You win!  Your score is: " + this.score + ".  Now try with " + difficultyLevel + " bugs!");
+      //update game status
+      document.getElementById("status").innerHTML = "Score: " + this.score + " | Difficulty Level: " + difficultyLevel + " bugs";
     }
 
     return insideBoundaries;
@@ -137,6 +150,7 @@ class Player {
     this.y = 405;
   }
 
+  //upon hitting any of the arrow keys, move the player appropriately.
   handleInput(e) {
     switch (e) {
       case "up":
@@ -155,7 +169,7 @@ class Player {
   }
 };
 
-// Now instantiate your objects.
+//Instantiate objects and declare variables/constants.
 const enemyLanes = new Array(70, 150, 230);  //possible enemy lanes
 const minX = -100;
 const maxX = 500;
@@ -166,6 +180,7 @@ let player = new Player("char-boy");
 let allEnemies = new Array();
 let lastTime = Date.now();
 
+//Start the game by adding enemies based on the current difficultyLevel and render the player and all enemies.
 function startGame() {
   //fill allEnemies
   for (let x = 0; x < difficultyLevel; x++) {
@@ -180,8 +195,13 @@ function startGame() {
   });
 
   player.render();
+
+  //set game status
+  document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
+
 }
 
+//Stop all enemy animation and clear the enemies array.
 function stopGame() {
   allEnemies.forEach((enemy) => {
     enemy.animate(false);
@@ -203,6 +223,7 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+//Ensure DOM is loaded before starting the game.
 document.addEventListener("DOMContentLoaded", function(event) {
   startGame();
 });
