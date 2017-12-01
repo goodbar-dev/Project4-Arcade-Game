@@ -13,12 +13,21 @@ class Enemy {
 
   // Update the enemy's position, required method for game
   // Parameter: dt, a time delta between ticks
-  update(dt, x, y) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-    //this.x = x * dt;
-    //this.y = y * dt;
+  // You should multiply any movement by the dt parameter
+  // which will ensure the game runs at the same speed for
+  // all computers.
+  update(dt, increaseX, increaseY) {
+
+    if (dt < 1) {
+      dt = 1;
+    }
+
+    if (increaseX > 0) {
+      this.x = this.x + (increaseX * dt);
+    }
+    if (increaseY > 0) {
+      this.y = this.y + (increaseY * dt);
+    }
   }
 
   // Draw the enemy on the screen, required method for game
@@ -26,13 +35,25 @@ class Enemy {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 
+  checkCollisions() {
+
+  }
+
   animate(on) {
     let animateFunc = function(enemy) {
+      let now = Date.now();
+      let dt = (now - lastTime) / 1000.0;
+
       if (enemy.x < maxX) {
-        enemy.x++;
+        enemy.update(dt, 1, 0);
       } else {
         enemy.x = -100;
+        enemy.speed = Math.floor((Math.random() * 10) + 1); //set new random speed
+        clearInterval(enemy.interval); //clear current animation
+        enemy.interval = setInterval(animateFunc, enemy.speed, enemy);  //start animation at new speed.
       }
+
+      lastTime = now;
     }
 
     if (on) {
@@ -55,10 +76,44 @@ class Player {
 
   // Update the player's position, required method for game
   // Parameter: dt, a time delta between ticks
-  update(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+  // You should multiply any movement by the dt parameter
+  // which will ensure the game runs at the same speed for
+  // all computers.
+  update(increaseX, increaseY) {
+    if (increaseX !== undefined && increaseX != 0 && this.inboundsX(increaseX)) {
+      this.x = this.x + increaseX;
+    }
+
+    if (increaseY !== undefined && increaseY != 0 && this.inboundsY(increaseY)) {
+      this.y = this.y + increaseY;
+    }
+  }
+
+  //Before updating position, check to ensure the requested move is inbounds on the x-axis.
+  inboundsX(increaseX) {
+    let insideBoundaries = true;
+
+    if ((this.x + increaseX) >= maxX) {
+      insideBoundaries = false;
+    } else if ((this.x + increaseX) <= minX) {
+      insideBoundaries = false;
+    }
+
+    return insideBoundaries;
+  }
+
+  //Before updating position, check to ensure the requested move is inbounds on the y-axis.
+  inboundsY(increaseY) {
+    let insideBoundaries = true;
+
+    if ((this.y + increaseY) >= maxY) {
+      insideBoundaries = false;
+    }
+    else if ((this.y + increaseY) <= minY) {
+      insideBoundaries = false;
+    }
+
+    return insideBoundaries;
   }
 
   // Draw the player on the screen, required method for game
@@ -73,16 +128,16 @@ class Player {
   handleInput(e) {
     switch (e) {
       case "up":
-        this.y -= 80;
+        this.update(0, -80);
         break;
       case "down":
-        this.y += 80;
+        this.update(0, 80);
         break;
       case "left":
-        this.x -= 100;
+        this.update(-100, 0);
         break;
       case "right":
-        this.x += 100;
+        this.update(100, 0);
         break;
     }
   }
@@ -91,10 +146,13 @@ class Player {
 // Now instantiate your objects.
 const enemyLanes = new Array(70, 150, 230);  //possible enemy lanes
 const minX = -100;
-const maxX = 600;
+const maxX = 500;
+const minY = 80;
+const maxY = 485;
 const difficultyLevel = 8;  //the # of enemies
 let player = new Player("char-boy");
 let allEnemies = new Array();
+let lastTime = Date.now();
 
 function startGame() {
   //fill allEnemies
