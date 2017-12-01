@@ -28,6 +28,8 @@ class Enemy {
     if (increaseY > 0) {
       this.y = this.y + (increaseY * dt);
     }
+
+    this.checkCollision();
   }
 
   // Draw the enemy on the screen, required method for game
@@ -35,8 +37,11 @@ class Enemy {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 
-  checkCollisions() {
-
+  checkCollision() {
+    if (this.x >= (player.x - 35) && this.x <= (player.x + 35) && this.y == (player.y - 15)) {
+      player.score--;
+      player.reset();
+    }
   }
 
   animate(on) {
@@ -73,6 +78,7 @@ class Player {
     this.sprite = 'images/' + avatar + '.png';
     this.x = 200; //100 increments per square
     this.y = 405; //80 increments per square
+    this.score = 0;
   }
 
   // Update the player's position, required method for game
@@ -112,6 +118,9 @@ class Player {
     }
     else if ((this.y + increaseY) <= minY) {
       insideBoundaries = false;
+      this.score++;
+      alert("You win!  Your score is: " + this.score);
+      this.reset();
     }
 
     return insideBoundaries;
@@ -122,8 +131,10 @@ class Player {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 
+  //move player back to starting location.
   reset() {
-
+    this.x = 200;
+    this.y = 405;
   }
 
   handleInput(e) {
@@ -150,7 +161,7 @@ const minX = -100;
 const maxX = 500;
 const minY = 80;
 const maxY = 485;
-const difficultyLevel = 3;  //the # of enemies
+let difficultyLevel = 3;  //the # of enemies.
 let player = new Player("char-boy");
 let allEnemies = new Array();
 let lastTime = Date.now();
@@ -169,6 +180,14 @@ function startGame() {
   });
 
   player.render();
+}
+
+function stopGame() {
+  allEnemies.forEach((enemy) => {
+    enemy.animate(false);
+  });
+
+  allEnemies = [];
 }
 
 // This listens for key presses and sends the keys to your
