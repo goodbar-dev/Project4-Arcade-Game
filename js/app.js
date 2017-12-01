@@ -48,6 +48,7 @@ class Enemy {
         enemy.update(dt, 1, 0);
       } else {
         enemy.x = -100;
+        enemy.y = enemyLanes[Math.floor((Math.random() * 3))]; //set new random lane
         enemy.speed = Math.floor((Math.random() * 10) + 1); //set new random speed
         clearInterval(enemy.interval); //clear current animation
         enemy.interval = setInterval(animateFunc, enemy.speed, enemy);  //start animation at new speed.
@@ -149,7 +150,7 @@ const minX = -100;
 const maxX = 500;
 const minY = 80;
 const maxY = 485;
-const difficultyLevel = 8;  //the # of enemies
+const difficultyLevel = 3;  //the # of enemies
 let player = new Player("char-boy");
 let allEnemies = new Array();
 let lastTime = Date.now();
