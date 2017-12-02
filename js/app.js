@@ -223,7 +223,7 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//Ensure DOM is loaded before starting the game.
-document.addEventListener("DOMContentLoaded", function(event) {
+//Ensure DOM/window is loaded before starting the game.
+window.onload = function() {
   startGame();
-});
+}
