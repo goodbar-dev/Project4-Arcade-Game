@@ -198,7 +198,6 @@ function startGame() {
 
   //set game status
   document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
-
 }
 
 //Stop all enemy animation and clear the enemies array.
