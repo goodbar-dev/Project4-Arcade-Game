@@ -1,13 +1,18 @@
-// Enemies our player must avoid
-class Enemy {
-  // Variables applied to each of our instances go here,
-  // we've provided one for you to get started
-  constructor(x, y, speed) {
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+//parent class that both enemies and players inherit from.
+class Character {
+  constructor(x, y, sprite) {
     this.x = x;
     this.y = y;
-    this.sprite = 'images/enemy-bug.png';
+    // The image/sprite for our enemies, this uses
+    // a helper we've provided to easily load images
+    this.sprite = sprite;
+  }
+}
+
+// Enemies our player must avoid
+class Enemy extends Character {
+  constructor(x, y, speed) {
+    super(x, y, 'images/enemy-bug.png');
     this.speed = speed;
   }
 
@@ -50,11 +55,11 @@ class Enemy {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-class Player {
+class Player extends Character {
   constructor(avatar) {
-    this.sprite = 'images/' + avatar + '.png';
-    this.x = 200; //100 increments per square
-    this.y = 405; //80 increments per square
+    //x parameter --> 100 increments per square
+    //y parameter --> 80 increments per square
+    super(200, 405, 'images/' + avatar + '.png');
     this.score = 0;
   }
 
