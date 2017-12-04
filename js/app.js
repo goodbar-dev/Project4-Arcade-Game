@@ -56,18 +56,18 @@ class Enemy {
       let now = Date.now();
       let dt = (now - lastTime) / 1000.0;
 
-      if (enemy.x < maxX) {
+      if (enemy.x < MAX_X) {
         enemy.update(dt, 1, 0);
       } else {
         enemy.x = -100;
-        enemy.y = enemyLanes[Math.floor((Math.random() * 3))]; //set new random lane
+        enemy.y = ENEMY_LANES[Math.floor((Math.random() * 3))]; //set new random lane
         enemy.speed = Math.floor((Math.random() * 10) + 1); //set new random speed
         clearInterval(enemy.interval); //clear current animation
         enemy.interval = setInterval(animateFunc, enemy.speed, enemy);  //start animation at new speed.
       }
 
       lastTime = now;
-    }
+    };
 
     if (on) {
       this.interval = setInterval(animateFunc, this.speed, this);
@@ -75,7 +75,7 @@ class Enemy {
       clearInterval(this.interval);
     }
   }
-};
+}
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -94,11 +94,11 @@ class Player {
   // which will ensure the game runs at the same speed for
   // all computers.
   update(increaseX, increaseY) {
-    if (increaseX !== undefined && increaseX != 0 && this.inboundsX(increaseX)) {
+    if (increaseX !== undefined && increaseX !== 0 && this.inboundsX(increaseX)) {
       this.x = this.x + increaseX;
     }
 
-    if (increaseY !== undefined && increaseY != 0 && this.inboundsY(increaseY)) {
+    if (increaseY !== undefined && increaseY !== 0 && this.inboundsY(increaseY)) {
       this.y = this.y + increaseY;
     }
   }
@@ -107,9 +107,9 @@ class Player {
   inboundsX(increaseX) {
     let insideBoundaries = true;
 
-    if ((this.x + increaseX) >= maxX) {
+    if ((this.x + increaseX) >= MAX_X) {
       insideBoundaries = false;
-    } else if ((this.x + increaseX) <= minX) {
+    } else if ((this.x + increaseX) <= MIN_X) {
       insideBoundaries = false;
     }
 
@@ -120,10 +120,10 @@ class Player {
   inboundsY(increaseY) {
     let insideBoundaries = true;
 
-    if ((this.y + increaseY) >= maxY) {
+    if ((this.y + increaseY) >= MAX_Y) {
       insideBoundaries = false;
     }
-    else if ((this.y + increaseY) <= minY) {
+    else if ((this.y + increaseY) <= MIN_Y) {
       insideBoundaries = false;
       //if this is true, the player WON, so update score/difficultyLevel and restart the game.
       this.score++;
@@ -167,17 +167,17 @@ class Player {
         break;
     }
   }
-};
+}
 
 //Instantiate objects and declare variables/constants.
-const enemyLanes = new Array(70, 150, 230);  //possible enemy lanes
-const minX = -100;
-const maxX = 500;
-const minY = 80;
-const maxY = 485;
+const ENEMY_LANES = [70, 150, 230];  //possible enemy lanes
+const MIN_X = -100;
+const MAX_X = 500;
+const MIN_Y = 80;
+const MAX_Y = 485;
 let difficultyLevel = 3;  //the # of enemies.
 let player = new Player("char-boy");
-let allEnemies = new Array();
+let allEnemies = [];
 let lastTime = Date.now();
 
 //Start the game by adding enemies based on the current difficultyLevel and render the player and all enemies.
@@ -186,7 +186,7 @@ function startGame() {
   for (let x = 0; x < difficultyLevel; x++) {
     //add enemy at the starting point in 1 of 3 random lanes running in 1 of 10 random speeds.
     //place all enemy objects in an array called allEnemies
-    allEnemies.push(new Enemy(-100, enemyLanes[Math.floor((Math.random() * 3))], Math.floor((Math.random() * 10) + 1)));
+    allEnemies.push(new Enemy(-100, ENEMY_LANES[Math.floor((Math.random() * 3))], Math.floor((Math.random() * 10) + 1)));
   }
 
   allEnemies.forEach((enemy) => {
@@ -225,4 +225,4 @@ document.addEventListener('keyup', function(e) {
 //Ensure DOM/window is loaded before starting the game.
 window.onload = function() {
   startGame();
-}
+};
