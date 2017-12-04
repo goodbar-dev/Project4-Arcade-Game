@@ -154,7 +154,6 @@ const MAX_Y = 485;
 let difficultyLevel = 3;  //the # of enemies.
 let player = new Player("char-boy");
 let allEnemies = [];
-let lastTime = Date.now();
 
 //Start the game by adding enemies based on the current difficultyLevel and render the player and all enemies.
 function startGame() {
