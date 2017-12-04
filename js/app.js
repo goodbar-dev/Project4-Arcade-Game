@@ -190,11 +190,11 @@ function startGame() {
   }
 
   allEnemies.forEach((enemy) => {
-    enemy.render();
+    //enemy.render();
     enemy.animate(true);
   });
 
-  player.render();
+  //player.render();
 
   //set game status
   document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
