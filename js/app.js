@@ -88,12 +88,8 @@ class Player {
     this.score = 0;
   }
 
-  // Update the player's position, required method for game
-  // Parameter: dt, a time delta between ticks
-  // You should multiply any movement by the dt parameter
-  // which will ensure the game runs at the same speed for
-  // all computers.
-  update(increaseX, increaseY) {
+  // Update the player's position and checks if it is in bounds, or has won.
+  move(increaseX, increaseY) {
     if (increaseX !== undefined && increaseX !== 0 && this.inboundsX(increaseX)) {
       this.x = this.x + increaseX;
     }
@@ -101,6 +97,11 @@ class Player {
     if (increaseY !== undefined && increaseY !== 0 && this.inboundsY(increaseY)) {
       this.y = this.y + increaseY;
     }
+  }
+
+  //update method used by engine.js,  required method for game
+  update() {
+
   }
 
   //Before updating position, check to ensure the requested move is inbounds on the x-axis.
@@ -154,16 +155,16 @@ class Player {
   handleInput(e) {
     switch (e) {
       case "up":
-        this.update(0, -80);
+        this.move(0, -80);
         break;
       case "down":
-        this.update(0, 80);
+        this.move(0, 80);
         break;
       case "left":
-        this.update(-100, 0);
+        this.move(-100, 0);
         break;
       case "right":
-        this.update(100, 0);
+        this.move(100, 0);
         break;
     }
   }
