@@ -16,18 +16,15 @@ class Enemy {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  update(dt, increaseX, increaseY) {
+  update(dt) { //, increaseX, increaseY
+    this.x = this.x + (this.speed * dt);
 
-    //if dt < 1, then no need to adjust movement as this is a speedy machine.
-    if (dt < 1) {
-      dt = 1;
-    }
-
-    if (increaseX > 0) {
-      this.x = this.x + (increaseX * dt);
-    }
-    if (increaseY > 0) {
-      this.y = this.y + (increaseY * dt);
+    if (this.x < MAX_X) {
+        this.x = this.x + (this.speed * dt);
+    } else {
+        this.x = -100;
+        this.y = ENEMY_LANES[Math.floor((Math.random() * 3))]; //set new random lane
+        this.speed = Math.floor((Math.random() * 200) + 50); //set new random speed
     }
 
     this.checkCollision();
@@ -46,33 +43,6 @@ class Enemy {
       player.reset();
       //update game status
       document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
-    }
-  }
-
-  //Activates or deactivates animation of a single enemy.
-  //If the enemy leaves the screen, reset the lane and speed to random values, stop the animation and restart with new values.
-  animate(on) {
-    let animateFunc = function(enemy) {
-      let now = Date.now();
-      let dt = (now - lastTime) / 1000.0;
-
-      if (enemy.x < MAX_X) {
-        enemy.update(dt, 1, 0);
-      } else {
-        enemy.x = -100;
-        enemy.y = ENEMY_LANES[Math.floor((Math.random() * 3))]; //set new random lane
-        enemy.speed = Math.floor((Math.random() * 10) + 1); //set new random speed
-        clearInterval(enemy.interval); //clear current animation
-        enemy.interval = setInterval(animateFunc, enemy.speed, enemy);  //start animation at new speed.
-      }
-
-      lastTime = now;
-    };
-
-    if (on) {
-      this.interval = setInterval(animateFunc, this.speed, this);
-    } else {
-      clearInterval(this.interval);
     }
   }
 }
@@ -187,26 +157,15 @@ function startGame() {
   for (let x = 0; x < difficultyLevel; x++) {
     //add enemy at the starting point in 1 of 3 random lanes running in 1 of 10 random speeds.
     //place all enemy objects in an array called allEnemies
-    allEnemies.push(new Enemy(-100, ENEMY_LANES[Math.floor((Math.random() * 3))], Math.floor((Math.random() * 10) + 1)));
+    allEnemies.push(new Enemy(-100, ENEMY_LANES[Math.floor((Math.random() * 3))], Math.floor((Math.random() * 200) + 50)));
   }
-
-  allEnemies.forEach((enemy) => {
-    //enemy.render();
-    enemy.animate(true);
-  });
-
-  //player.render();
 
   //set game status
   document.getElementById("status").innerHTML = "Score: " + player.score + " | Difficulty Level: " + difficultyLevel + " bugs";
 }
 
-//Stop all enemy animation and clear the enemies array.
+//Clear the enemies array.
 function stopGame() {
-  allEnemies.forEach((enemy) => {
-    enemy.animate(false);
-  });
-
   allEnemies = [];
 }
 
